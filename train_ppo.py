@@ -5,6 +5,8 @@ from stable_baselines3.common.utils import set_random_seed
 from vec_env_utils import make_vec_env
 from robot import Robot
 from arm_dynamics import ArmDynamics
+from stable_baselines3 import PPO
+from stable_baselines3.common.evaluation import evaluate_policy
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -48,12 +50,20 @@ def train(args):
 
     # create parallel envs
     vec_env = make_vec_env(arm=arm, nenv=args.nenv, seed=args.seed)
+    # vec_env = make_vec_env(arm=arm, nenv=1, seed=args.seed) # changed nenv to 1 for debugging
 
-    # ------ IMPLEMENT YOUR TRAINING CODE HERE ------------
+    # ------ IMPLEMENT YOUR TRAINING CODE HERE------------
 
-    # Don't forget to save your model
 
-    raise NotImplementedError
+    model = PPO("MlpPolicy", 
+                    vec_env, 
+                    verbose=1)
+    scale = 10
+    print("learning starting...")
+    model.learn(total_timesteps=args.timesteps*scale)
+    model.save(f"{args.save_dir}_ppo")
+
+
 
 if __name__ == "__main__":
 

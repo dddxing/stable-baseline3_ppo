@@ -110,6 +110,7 @@ class ArmDynamics(ArmDynamicsBase):
         # Apply torques
         tau = action
         for i in range(self.num_links):
+            # print(i)
             right_hand[self.idx_tau_eqbm(i), 0] += (tau[i + 1] if i < self.num_links - 1 else 0.0) - tau[i]
 
         return left_hand, right_hand
